@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AR.js met eigen marker</title>
+    <title>AR.js met meertalige startscreen</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   </head>
   <body style="margin:0; overflow:hidden;">
 
     <!-- Startscreen overlay -->
-    <div id="startscreen" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; color:white; font-size:2em; z-index:10;">
-      <button id="startButton" style="padding:20px 40px; font-size:1em;">Start AR</button>
+    <div id="startscreen" style="position:absolute; top:0; left:0; width:100%; height:100%; 
+        background:rgba(0,0,0,0.8); display:flex; flex-direction:column; justify-content:center; 
+        align-items:center; color:white; font-size:2em; z-index:10; gap:20px;">
+      
+      <button class="langBtn" data-lang="NL" style="padding:20px 40px;">Nederlands</button>
+      <button class="langBtn" data-lang="DE" style="padding:20px 40px;">Deutsch</button>
+      <button class="langBtn" data-lang="EN" style="padding:20px 40px;">English</button>
     </div>
 
     <!-- AR Scene -->
-    <a-scene embedded arjs>
+    <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: true; markersAreaEnabled: false;">
       <a-marker type="pattern" url="Tegeltje.patt">
         
-        <!-- 3D model in plaats van box -->
+        <!-- 3D model -->
         <a-entity 
           gltf-model="url(poppetje.glb)" 
-          scale="2 2 2" 
+          scale="1 1 1" 
           position="0 0 0" 
-          rotation="-90 0 0">
+          rotation="0 0 0">
         </a-entity>
 
         <!-- Tekst boven model -->
         <a-text 
-          id="nltText"
-          value="Hallo AR!" 
+          id="greetingText"
+          value="" 
           position="1 0 0"
           rotation="-90 0 0"
           align="center" 
@@ -41,19 +46,31 @@
     </a-scene>
 
     <script>
-      const startButton = document.getElementById('startButton');
       const startscreen = document.getElementById('startscreen');
-      const nltText = document.getElementById('nltText');
+      const buttons = document.querySelectorAll('.langBtn');
+      const greetingText = document.getElementById('greetingText');
 
-      startButton.addEventListener('click', () => {
-        startscreen.style.display = 'none';
-        window.NLT1 = "waarde1"; 
-        console.log("AR gestart, NLT1 =", window.NLT1);
+      const greetings = {
+        NL: "Hoi, ik ben een vissersvrouw",
+        DE: "Hoi, ich bin eine Fischerfrau",
+        EN: "Hi, I am a fisherwoman"
+      };
 
-        if(window.NLT1 === "waarde1"){
-          nltText.setAttribute('visible', 'true');
-        }
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+
+          // Startscreen verbergen
+          startscreen.style.display = 'none';
+
+          // Tekst instellen en zichtbaar maken
+          greetingText.setAttribute('value', greetings[lang]);
+          greetingText.setAttribute('visible', 'true');
+
+          console.log("Geselecteerde taal:", lang, "tekst:", greetings[lang]);
+        });
       });
     </script>
+
   </body>
 </html>
