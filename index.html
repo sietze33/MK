@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AR.js met meertalige startscreen</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body style="margin:0; overflow:hidden;">
+
+    <!-- Startscreen overlay -->
+    <div id="startscreen" style="position:absolute; top:0; left:0; width:100%; height:100%; 
+        background:rgba(0,0,0,0.8); display:flex; flex-direction:column; justify-content:center; 
+        align-items:center; color:white; font-size:2em; z-index:10; gap:20px;">
+      
+      <button class="langBtn" data-lang="NL" style="padding:20px 40px;">Nederlands</button>
+      <button class="langBtn" data-lang="DE" style="padding:20px 40px;">Deutsch</button>
+      <button class="langBtn" data-lang="EN" style="padding:20px 40px;">English</button>
+    </div>
+
+    <!-- AR Scene -->
+    <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: true; markersAreaEnabled: false;">
+      <a-marker type="pattern" url="QR2.patt">
+        
+        <!-- 3D model -->
+        <a-entity 
+          gltf-model="url(poppetje.glb)" 
+          scale="2 2 2" 
+          position="0 0 0" 
+          rotation="-90 0 0">
+        </a-entity>
+
+        <!-- Tekst boven model -->
+        <a-text 
+          id="greetingText"
+          value="" 
+          position="2 0 0"
+          rotation="-90 0 0"
+          align="center" 
+          color="white"
+          visible="false">
+        </a-text>
+
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      const startscreen = document.getElementById('startscreen');
+      const buttons = document.querySelectorAll('.langBtn');
+      const greetingText = document.getElementById('greetingText');
+
+      const greetings = {
+        NL: "Hoi, ik ben een vissersvrouw",
+        DE: "Hoi, ich bin eine Fischerfrau",
+        EN: "Hi, I am a fisherwoman"
+      };
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+
+          // Startscreen verbergen
+          startscreen.style.display = 'none';
+
+          // Tekst instellen en zichtbaar maken
+          greetingText.setAttribute('value', greetings[lang]);
+          greetingText.setAttribute('visible', 'true');
+
+          console.log("Geselecteerde taal:", lang, "tekst:", greetings[lang]);
+        });
+      });
+    </script>
+
+  </body>
+</html>
+
+
+
+
